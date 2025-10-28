@@ -15,6 +15,12 @@
 (= (assertAlphaEqual $A $B)
    (assert (=alpha $A $B)))
 
+(: unify (-> Expression Expression Expression Expression %Undefined%))
+(= (unify $a $b $then $else)
+   (if (= $a $b)
+       (eval $then)
+       (eval $else)))
+
 ;Error Handling
 (= (if-error $X $A $B)
    (if (== (car-atom $X) Error) 
@@ -41,7 +47,7 @@
 
 ;Evaluation control
 (= (for-each-in-atom $L $f)
-   (map-flat $L $f))
+   (map-atom $L $f))
 
 (: evalc (-> Expression %Undefined% %Undefined%))
 (= (evalc $expression &self)
@@ -50,7 +56,7 @@
 ;Quoting
 (: unquote (-> Expression %Undefined%))
 (= (unquote (quote $A))
-   (let $temp (cut) (eval $A)))
+   (eval $A))
 
 (: noreduce-eq (-> Expression Expression Bool))
 (= (noreduce-eq $A $B)

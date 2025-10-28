@@ -98,6 +98,16 @@ cons(H, T, [H|T]).
 'is-member'(X, List, false) :- \+ member(X, List).
 'exclude-item'(A, L, R) :- exclude(==(A), L, R).
 
+
+%Unique set operations:
+unique([], []).
+unique([H|T], [H|R]) :-
+    \+ member(H, T),
+    unique(T, R).
+unique([H|T], R) :-
+    member(H, T),
+    unique(T, R),
+    sort(R, R).
 %Multisets:
 'subtraction-atom'([], _, []).
 'subtraction-atom'([H|T], B, Out) :- ( select(H, B, BRest) -> 'subtraction-atom'(T, BRest, Out)
@@ -105,6 +115,9 @@ cons(H, T, [H|T]).
                                                               'subtraction-atom'(T, B, Rest) ).
 'union-atom'(A, B, Out) :- append(A, B, Out).
 'intersection-atom'(A, B, Out) :- intersection(A, B, Out).
+
+%Unique set operations:
+'unique-atom'(A, out) :- unique(A, out).
 
 %%% Type system: %%%
 get_function_type([F,Arg], T) :- match('&self', [':',F,['->',A,B]], _, _),
@@ -278,4 +291,4 @@ unregister_fun(N/Arity) :- retractall(fun(N)),
                           'union-atom', 'cons-atom', 'intersection-atom', 'subtraction-atom', 'index-atom', id,
                           'pow-math', 'sqrt-math', 'abs-math', 'log-math', 'trunc-math', 'ceil-math',
                           'floor-math', 'round-math', 'sin-math', 'cos-math', 'tan-math', 'asin-math',
-                          'acos-math', 'atan-math', 'isnan-math', 'isinf-math', 'min-atom', 'max-atom', 'size-atom']).
+                          'acos-math', 'atan-math', 'isnan-math', 'isinf-math', 'min-atom', 'max-atom', 'size-atom' , 'unique-atom']).
